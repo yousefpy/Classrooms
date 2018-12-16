@@ -140,6 +140,10 @@ def student_update(request, classroom_id, student_id):
     return render(request,'student_update.html', context)
 
 def student_delete(request, classroom_id, student_id):
-    Student.objects.get(id=student_id).delete()
-    messages.success(request, "Successfully Deleted!")
-    return redirect('classroom-detail', classroom_id)
+    classroom =  Classroom.objects.get(id=classroom_id)
+    if request.user == classroom.teacher:
+        Student.objects.get(id=student_id).delete()
+        messages.success(request, "Successfully Deleted!")
+        return redirect('classroom-detail', classroom_id)
+    else:
+        return redirect("classroom-list")
